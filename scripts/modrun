@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Ensure at least one source file is passed
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <source_file.c> [additional_files.c] [gcc_args...]"
+    exit 1
+fi
+
+# Extract the output file name from the first source file (without the .c extension)
+OUTPUT_NAME="${1%.c}"
+
+# Prepare the source files and additional GCC arguments
+SRC_FILES=""
+GCC_ARGS=""
+
+# Loop over all arguments
+for arg in "$@"; do
+    if [[ "$arg" == -* ]]; then
+        # Collect GCC arguments (those starting with a dash)
+        GCC_ARGS="$GCC_ARGS $arg"
+    else
+        # Collect source files (those without a dash)
+        SRC_FILES="$SRC_FILES $arg"
+    fi
+done
+
+# Compile the C files using prome-cc
+prome-cc $GCC_ARGS -o "$OUTPUT_NAME" $SRC_FILES
+
+# Check if the compilation was successful
+if [ $? -eq 0 ]; then
+    echo "Compilation successful. Running $OUTPUT_NAME..."
+    ./"$OUTPUT_NAME"
+else
+    echo "Compilation failed."
+    exit 1
+fi

@@ -32,24 +32,24 @@ clean:
 
 # ============================ INSTALLATION ============================
 .PHONY: install
-install:
+install:modrun modcc $(LIB_NAME)
 	# Install the library
 	cp $(LIB_DIR)/$(LIB_NAME) /usr/local/lib/
 	cp $(INCLUDE_DIR)/cmod.h /usr/local/include/
 	# Install custom compile command
-	cp modcc /usr/local/bin/
-	cp modrun /usr/local/bin/
+	cp ./scripts/modcc /usr/local/bin/
+	cp ./scripts/modrun /usr/local/bin/
 
 # ============================ CUSTOM COMMANDS ============================
 # Custom compile command: modcc
-modcc:
-	@echo "Running prome-cc script..."
-	@chmod +x ./modcc
+modcc:scripts/modcc
+	@echo "Running modcc script..."
+	@chmod +x ./scripts/modcc
 
 # Custom run command: modrun
-modrun:
-	@echo "Running prome-run script..."
-	@chmod +x ./modrun
+modrun:scripts/modrun
+	@echo "Running modrun script..."
+	@chmod +x ./scripts/modrun
 
 # ============================ BUILD THE LIBRARY ============================
 all: $(LIB_DIR)/$(LIB_NAME)
