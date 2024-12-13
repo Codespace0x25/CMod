@@ -5,6 +5,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdarg.h>
+// ========================== DEFINUSHON ==========================
+#define AND &&
+#define OR ||
+#define LESS_THEN <
+#define GRADER_THEN >
+#define LESS_THEN_OR_EQULE <=
+#define GRADER_THEN_OR_EQULE >=
+#define IS ==
+#define IS_NOT !=
 
 // ========================== MATRIX API ==========================
 typedef struct Matrix {
