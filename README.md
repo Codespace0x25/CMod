@@ -1,6 +1,3 @@
-Ah, I see! You need a `README.md` that explains how to install the project with the `sudo make install` command and includes usage instructions. Here's a `README.md` with those details included:
-
-```markdown
 # Cmod Library
 
 The Cmod library provides various utilities, including matrix operations, string manipulation, HTTP requests (with `libcurl`), and a custom printf function. This README will guide you through the process of installing and using the Cmod library.
