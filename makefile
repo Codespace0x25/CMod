@@ -16,6 +16,10 @@ $(shell mkdir -p $(LIB_DIR) $(OUTPUT_DIR))
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(LIB_DIR)/%.o)
 
+# Rule to build .o files from .c files
+$(LIB_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
 # Target for building the static library
 $(LIB_DIR)/$(LIB_NAME): $(OBJS)
 	ar rcs $@ $^
@@ -23,7 +27,7 @@ $(LIB_DIR)/$(LIB_NAME): $(OBJS)
 # ============================ EXECUTABLE BUILD ===========================
 # Rule for building the executable
 $(OUTPUT_DIR)/$(EXEC_NAME): $(SRC_DIR)/main.c $(LIB_DIR)/$(LIB_NAME)
-	$(CC) $(CFLAGS) -L$(LIB_DIR) -lprome -lcurl -o $@ $^
+	$(CC) $(CFLAGS) -L$(LIB_DIR) -lprome -o $@ $^
 
 # ============================ CLEANING ============================
 .PHONY: clean
@@ -32,22 +36,20 @@ clean:
 
 # ============================ INSTALLATION ============================
 .PHONY: install
-install:modrun modcc $(LIB_NAME)
-	# Install the library
+install: modrun modcc $(LIB_DIR)/$(LIB_NAME)
 	cp $(LIB_DIR)/$(LIB_NAME) /usr/local/lib/
 	cp $(INCLUDE_DIR)/cmod.h /usr/local/include/
-	# Install custom compile command
 	cp ./scripts/modcc /usr/local/bin/
 	cp ./scripts/modrun /usr/local/bin/
 
 # ============================ CUSTOM COMMANDS ============================
 # Custom compile command: modcc
-modcc:scripts/modcc
+modcc: scripts/modcc
 	@echo "Running modcc script..."
 	@chmod +x ./scripts/modcc
 
 # Custom run command: modrun
-modrun:scripts/modrun
+modrun: scripts/modrun
 	@echo "Running modrun script..."
 	@chmod +x ./scripts/modrun
 
@@ -58,4 +60,3 @@ all: $(LIB_DIR)/$(LIB_NAME)
 .PHONY: test
 test: $(OUTPUT_DIR)/$(EXEC_NAME)
 	$(OUTPUT_DIR)/$(EXEC_NAME)
-

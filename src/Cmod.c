@@ -1,6 +1,6 @@
-#include "cmod.h"
+#include "../include/cmod.h"
 #include <string.h>
-#include <curl/curl.h>
+#include <stdlib.h>
 
 // ========================== MATRIX API ==========================
 Matrix *matrix_create(size_t rows, size_t cols) {
@@ -85,6 +85,8 @@ void string_replace(String *s, const char *find, const char *replace) {
     s->length = new_len;
 }
 
+#ifdef NETWORK
+#include <curl/curl.h>
 // ========================== HTTP API ===========================
 static size_t write_callback(void *ptr, size_t size, size_t nmemb, void *userdata) {
     size_t total_size = size * nmemb;
@@ -149,7 +151,7 @@ String *http_request(RequestType type, String *url, String *headers, String *bod
 
     return response;
 }
-
+#endif
 // ========================== CUSTOM PRINTF =======================
 void pprintf(const char *format, ...) {
     va_list args;
