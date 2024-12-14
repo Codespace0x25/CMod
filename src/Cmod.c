@@ -3,6 +3,14 @@
 #include <stdlib.h>
 
 // ========================== MATRIX API ==========================
+
+/**
+ * @brief Create a matrix with the specified number of rows and columns.
+ *
+ * @param rows Number of rows in the matrix.
+ * @param cols Number of columns in the matrix.
+ * @return Pointer to the created Matrix, or NULL if allocation fails.
+ */
 Matrix *matrix_create(size_t rows, size_t cols) {
     Matrix *m = (Matrix *)malloc(sizeof(Matrix));
     m->rows = rows;
@@ -14,6 +22,11 @@ Matrix *matrix_create(size_t rows, size_t cols) {
     return m;
 }
 
+/**
+ * @brief Free the memory associated with a Matrix object.
+ *
+ * @param m Pointer to the Matrix to be destroyed. Does nothing if NULL.
+ */
 void matrix_destroy(Matrix *m) {
     if (m) {
         for (size_t i = 0; i < m->rows; i++) {
@@ -24,6 +37,13 @@ void matrix_destroy(Matrix *m) {
     }
 }
 
+/**
+ * @brief Add two matrices.
+ *
+ * @param a Pointer to the first matrix.
+ * @param b Pointer to the second matrix.
+ * @return Pointer to the resulting Matrix, or NULL if dimensions mismatch.
+ */
 Matrix *matrix_add(const Matrix *a, const Matrix *b) {
     if (a->rows != b->rows || a->cols != b->cols) return NULL;
 
@@ -36,6 +56,13 @@ Matrix *matrix_add(const Matrix *a, const Matrix *b) {
     return result;
 }
 
+/**
+ * @brief Subtract matrix b from matrix a.
+ *
+ * @param a Pointer to the first matrix.
+ * @param b Pointer to the second matrix.
+ * @return Pointer to the resulting Matrix, or NULL if dimensions mismatch.
+ */
 Matrix *matrix_sub(const Matrix *a, const Matrix *b) {
     if (a->rows != b->rows || a->cols != b->cols) return NULL;
 
@@ -48,7 +75,15 @@ Matrix *matrix_sub(const Matrix *a, const Matrix *b) {
     return result;
 }
 
+// TODO: Implement matrix_mul and matrix_div functions.
 // ========================== STRING API ==========================
+
+/**
+ * @brief Create a new String object with the given initial data.
+ *
+ * @param initial_data C-string to initialize the String object with.
+ * @return Pointer to the created String, or NULL if allocation fails.
+ */
 String *string_create(const char *initial_data) {
     size_t len = strlen(initial_data);
     String *s = (String *)malloc(sizeof(String));
@@ -58,6 +93,11 @@ String *string_create(const char *initial_data) {
     return s;
 }
 
+/**
+ * @brief Free the memory associated with a String object.
+ *
+ * @param s Pointer to the String to be destroyed. Does nothing if NULL.
+ */
 void string_destroy(String *s) {
     if (s) {
         free(s->data);
@@ -65,6 +105,13 @@ void string_destroy(String *s) {
     }
 }
 
+/**
+ * @brief Replace occurrences of a substring with another string within a String object.
+ *
+ * @param s Pointer to the String object.
+ * @param find Substring to find.
+ * @param replace Substring to replace it with.
+ */
 void string_replace(String *s, const char *find, const char *replace) {
     char *pos = strstr(s->data, find);
     if (!pos) return;
@@ -88,6 +135,16 @@ void string_replace(String *s, const char *find, const char *replace) {
 #ifdef NETWORK
 #include <curl/curl.h>
 // ========================== HTTP API ===========================
+
+/**
+ * @brief Callback function for libcurl to handle response data.
+ *
+ * @param ptr Pointer to the response data.
+ * @param size Size of each data chunk.
+ * @param nmemb Number of data chunks.
+ * @param userdata Pointer to the String object storing the response.
+ * @return Number of bytes handled.
+ */
 static size_t write_callback(void *ptr, size_t size, size_t nmemb, void *userdata) {
     size_t total_size = size * nmemb;
     String *response = (String *)userdata;
@@ -100,6 +157,15 @@ static size_t write_callback(void *ptr, size_t size, size_t nmemb, void *userdat
     return total_size;
 }
 
+/**
+ * @brief Perform an HTTP request using libcurl.
+ *
+ * @param type Type of the HTTP request (GET, POST, PUT, DELETE).
+ * @param url Pointer to the URL String object.
+ * @param headers Pointer to the headers String object (newline-separated).
+ * @param body Pointer to the body String object for POST/PUT requests.
+ * @return Pointer to the response String object, or NULL on failure.
+ */
 String *http_request(RequestType type, String *url, String *headers, String *body) {
     CURL *curl = curl_easy_init();
     if (!curl) return NULL;
@@ -152,7 +218,15 @@ String *http_request(RequestType type, String *url, String *headers, String *bod
     return response;
 }
 #endif
+
 // ========================== CUSTOM PRINTF =======================
+
+/**
+ * @brief A custom printf function supporting String objects.
+ *
+ * @param format Format string, with `%s` to print String objects.
+ * @param ... Additional arguments for the format string.
+ */
 void pprintf(const char *format, ...) {
     va_list args;
     va_start(args, format);
