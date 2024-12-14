@@ -139,26 +139,3 @@ Contributions are welcome! If you'd like to contribute to the Cmod library, plea
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-### Key Points in the `README.md`:
-
-1. **Installation Instructions**:
-   - Includes the required dependencies (`libcurl` development libraries).
-   - Steps to clone the repository and build the project.
-   - Instructions for installing the library system-wide using `sudo make install`.
-
-2. **Usage**:
-   - Shows an example program using the Cmod library (matrix operations).
-   - Explains how to compile a program that uses the library.
-
-3. **API Overview**:
-   - Provides descriptions for the matrix, string, HTTP, and custom `printf` APIs, with a summary of available functions.
-
-4. **Contributing**:
-   - Mentions how to contribute via forking the repository and submitting pull requests.
-
-5. **License**:
-   - Specifies that the project is licensed under the MIT License (you can change this as per your project's license).
-
-This should provide a clear and complete guide for users to install, use, and contribute to the Cmod library. Let me know if you'd like further modifications!
