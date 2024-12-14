@@ -67,26 +67,19 @@ extern Pointer_t malloc(unsigned long size);
 // ========================== MATRIX API ==========================
 
 Matrix *matrix_create(size_t rows, size_t cols);
-
 Deleter matrix_destroy(Matrix *m);
-
 Matrix *matrix_add(const Matrix *a, const Matrix *b);
-
 Matrix *matrix_sub(const Matrix *a, const Matrix *b);
-
 Matrix *matrix_mul(const Matrix *a, const Matrix *b);
-
 Matrix *matrix_div(const Matrix *a, const Matrix *b);
 
 // ========================== STRING API ==========================
 
 
 String *string_create(const char *initial_data);
-
 Deleter string_destroy(String *s);
-
 void string_replace(String *s, const char *find, const char *replace);
-
+void string_append(String* str, const char* append);
 String *string_find(const String *s, const char *substring);
 
 // ========================== HTTP API ===========================
@@ -97,3 +90,6 @@ String *http_request(RequestType type, String *url, String *headers, String *bod
 // ========================== CUSTOM PRINTF =======================
 
 void pprintf(const char *format, ...);
+
+// ========================== FILE MANAGERN =======================
+String* read_file_to_string(const char* filepath);

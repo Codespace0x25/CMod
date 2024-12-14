@@ -132,6 +132,31 @@ void string_replace(String *s, const char *find, const char *replace) {
     s->length = new_len;
 }
 
+
+/**
+ * @brief Apeinds the data to the string 
+ */
+void string_append(String* str, const char* append) {
+    if (!str || !append) {
+        fprintf(stderr, "Error: Invalid arguments to string_append.\n");
+        return;
+    }
+    size_t append_len = strlen(append);
+    if (append_len == 0) {
+        return;
+    }
+    size_t new_length = str->length + append_len;
+    char* new_data = realloc(str->data, new_length + 1);
+    if (!new_data) {
+        fprintf(stderr, "Error: Memory reallocation failed in string_append.\n");
+        return;
+    }
+    memcpy(new_data + str->length, append, append_len);
+    new_data[new_length] = '\0';
+    str->data = new_data;
+    str->length = new_length;
+}
+
 #ifdef NETWORK
 #include <curl/curl.h>
 // ========================== HTTP API ===========================
@@ -244,4 +269,30 @@ void pprintf(const char *format, ...) {
     }
 
     va_end(args);
+}
+
+// ========================== FILE MANAGERN =======================
+
+String* read_file_to_string(const char* filepath) {
+    FILE* file = fopen(filepath, "r");
+    if (!file) {
+        fprintf(stderr, "Error: Unable to open file '%s'.\n", filepath);
+        return NULL;
+    }
+
+    String* result = string_create("");
+    if (!result) {
+        fprintf(stderr, "Error: Unable to allocate memory for String.\n");
+        fclose(file);
+        return NULL;
+    }
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), file)) {
+        string_append(result, buffer);
+    }
+
+    fclose(file);
+
+    return result;
 }
