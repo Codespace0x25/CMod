@@ -91,7 +91,7 @@ int main() {
 To compile your program, link against the `libcmod` library:
 
 ```bash
-gcc -o my_program my_program.c -lcmod
+cmodcc-o my_program my_program.c
 ```
 
 ### Available Commands
