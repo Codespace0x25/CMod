@@ -75,6 +75,40 @@ Matrix *matrix_sub(const Matrix *a, const Matrix *b) {
     return result;
 }
 
+Matrix *matrix_mul(const Matrix *a, const Matrix *b){
+  if (a->cols IS_NOT b->rows) return NULL;
+
+  Matrix *result = matrix_create(a->rows, b->cols);
+
+  for (size_t i = 0; i < a->rows; i++) {
+    for (size_t j = 0; j < b->cols; j++) {
+      result->data[i][j] = 0;
+      for (size_t k = 0; k < a->cols; k++) {
+        result->data[i][j] += a->data[i][k] * b->data[k][j];
+      }
+    }
+  }
+  return result;
+}
+
+Matrix *matrix_div(const Matrix *a, const Matrix *b){
+  if (a->rows IS_NOT b->rows L_OR a->cols IS_NOT b->cols) return NULL;
+
+  Matrix *result = matrix_create(a->rows, a->cols);
+
+  for (size_t i = 0; i < a->rows; i++) {
+    for (size_t j = 0; j < a->cols; j++) {
+      if (b->data[i][j] != 0) {
+        result->data[i][j] = a->data[i][j] / b->data[i][j];
+      } else {
+        result->data[i][j] = 0;
+	fprintf(stderr,"you souldint do this you are deviding by a 0. that is bad");
+      }
+    }
+  }
+  return result;
+}
+
 // TODO: Implement matrix_mul and matrix_div functions.
 // ========================== STRING API ==========================
 
@@ -132,7 +166,6 @@ void string_replace(String *s, const char *find, const char *replace) {
     s->length = new_len;
 }
 
-#ifdef NETWORK
 #include <curl/curl.h>
 // ========================== HTTP API ===========================
 
@@ -217,7 +250,6 @@ String *http_request(RequestType type, String *url, String *headers, String *bod
 
     return response;
 }
-#endif
 
 // ========================== CUSTOM PRINTF =======================
 

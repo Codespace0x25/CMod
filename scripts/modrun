@@ -25,12 +25,13 @@ for arg in "$@"; do
 done
 
 # Compile the C files using prome-cc
-prome-cc $GCC_ARGS -o "$OUTPUT_NAME" $SRC_FILES
+modcc $GCC_ARGS -o "$OUTPUT_NAME" $SRC_FILES
 
 # Check if the compilation was successful
 if [ $? -eq 0 ]; then
     echo "Compilation successful. Running $OUTPUT_NAME..."
     ./"$OUTPUT_NAME"
+    rm "$OUTPUT_NAME"
 else
     echo "Compilation failed."
     exit 1

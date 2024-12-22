@@ -56,13 +56,8 @@ typedef enum {
 
 // ============================= MACROS ===========================
 
-#define cast(type) ((type))
-
-
-// ============================ stdlib =============================
-
-extern Pointer_t malloc(unsigned long size);
-
+#define cast(type, data) ((type)data)
+#define LOOP (while(true))
 
 // ========================== MATRIX API ==========================
 
@@ -89,11 +84,15 @@ void string_replace(String *s, const char *find, const char *replace);
 
 String *string_find(const String *s, const char *substring);
 
+void pprintf(const char *format, ...);
+
+  // ============================= MACROS ===========================
+
+#define Make_String(name,data) (String* name =string_create(data))
+#define To_char(data) (data.data)
+
 // ========================== HTTP API ===========================
 
 
 String *http_request(RequestType type, String *url, String *headers, String *body);
 
-// ========================== CUSTOM PRINTF =======================
-
-void pprintf(const char *format, ...);
