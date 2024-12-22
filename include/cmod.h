@@ -27,17 +27,6 @@ typedef struct String {
     size_t length;
 } String;
 
-typedef struct{
-  size_t num;
-  size_t *data;
-}Vector;
-
-typedef struct{
-  size_t num;
-  String *data;
-}Vector_string;
-
-
 
 // types of http reqruest;
 typedef enum {
