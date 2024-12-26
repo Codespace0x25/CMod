@@ -32,7 +32,7 @@ sudo apt install build-essential libcurl4-openssl-dev
 1. Clone the repository or download the source files:
 
     ```bash
-    git clone <repository_url>
+    git clone https://github.com:Codespace0x25/CMod.git
     cd cmod
     ```
 
