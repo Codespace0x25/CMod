@@ -27,20 +27,26 @@ $(LIB_DIR)/$(LIB_NAME): $(OBJS)
 # ============================ EXECUTABLE BUILD ===========================
 # Rule for building the executable
 $(OUTPUT_DIR)/$(EXEC_NAME): $(SRC_DIR)/main.c $(LIB_DIR)/$(LIB_NAME)
-	$(CC) $(CFLAGS) -L$(LIB_DIR) -lprome -o $@ $^
+	$(CC) $(CFLAGS) -L$(LIB_DIR) -lcmod -o $@ $^
 
 # ============================ CLEANING ============================
 .PHONY: clean
 clean:
 	rm -rf $(LIB_DIR)/*.o $(LIB_DIR)/$(LIB_NAME) $(OUTPUT_DIR)/*
 
+# ============================ REMOVE LIBRARY ============================
+.PHONY: remove-lib
+remove-lib:
+	rm -f /usr/lib/$(LIB_NAME) /usr/include/cmod.h
+	rm -f /usr/bin/modcc /usr/bin/modrun
+
 # ============================ INSTALLATION ============================
 .PHONY: install
 install: modrun modcc $(LIB_DIR)/$(LIB_NAME)
-	cp $(LIB_DIR)/$(LIB_NAME) /usr/local/lib/
-	cp $(INCLUDE_DIR)/cmod.h /usr/local/include/
-	cp ./scripts/modcc /usr/local/bin/
-	cp ./scripts/modrun /usr/local/bin/
+	cp $(LIB_DIR)/$(LIB_NAME) /usr/lib/
+	cp $(INCLUDE_DIR)/cmod.h /usr/include/
+	cp ./scripts/modcc /usr/bin/
+	cp ./scripts/modrun /usr/bin/
 
 # ============================ CUSTOM COMMANDS ============================
 # Custom compile command: modcc

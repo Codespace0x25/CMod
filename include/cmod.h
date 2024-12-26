@@ -56,11 +56,15 @@ typedef enum {
 #define DEC_BY -=
 #define SHIFT_LEFT <<
 #define SHIFT_RIGHT >>
+#define MUST_BE_FREE [[nodiscard]]
 
 // ============================= MACROS ===========================
 
 #define cast(type, data) ((type)data)
+
 #define LOOP (while(true))
+
+#define checkFORnull(input, cleanUp) (if(!input) cleanUp())
 
 // ========================== MATRIX API ==========================
 
