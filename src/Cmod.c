@@ -327,3 +327,122 @@ char *queue_pull(Queue_t *queue) {
     return NULL;
   return queue->data[queue->back++];
 }
+
+// ======================== HASH FUNCTION =========================
+uint hash_function(const char *key, size_t size) {
+  uint hash_value = 0;
+  for (size_t i = 0; key[i] != '\0'; i++) {
+    hash_value += key[i];
+    hash_value = (hash_value * 31) % size;
+  }
+  return hash_value;
+}
+
+// ======================== CREATE HASH TABLE =========================
+HashTable *hash_table_create(size_t size) {
+  HashTable *table = malloc(sizeof(HashTable));
+  if (table == NULL)
+    return NULL;
+
+  table->size = size;
+  table->count = 0;
+  table->buckets = calloc(size, sizeof(HashNode *));
+
+  return table;
+}
+// Declare the hash_table_resize function before it's used
+void hash_table_resize(HashTable *table, size_t new_size);
+// ======================== INSERT INTO HASH TABLE =========================
+void hash_table_insert(HashTable *table, const char *key, Pointer_t value) {
+  uint index = hash_function(key, table->size);
+  HashNode *new_node = malloc(sizeof(HashNode));
+
+  if (new_node == NULL)
+    return;
+
+  new_node->key = strdup(key);
+  new_node->value = value;
+  new_node->next = table->buckets[index];
+  table->buckets[index] = new_node;
+  table->count++;
+
+  // Resize if load factor exceeds 75%
+  if ((table->count * 100) > (table->size * 75)) {
+    hash_table_resize(table, table->size * 2);
+  }
+}
+
+// ======================== GET FROM HASH TABLE =========================
+Pointer_t hash_table_get(HashTable *table, const char *key) {
+  uint index = hash_function(key, table->size);
+  HashNode *node = table->buckets[index];
+
+  while (node != NULL) {
+    if (strcmp(node->key, key) == 0)
+      return node->value;
+    node = node->next;
+  }
+  return NULL;
+}
+
+// ======================== REMOVE FROM HASH TABLE =========================
+void hash_table_remove(HashTable *table, const char *key) {
+  uint index = hash_function(key, table->size);
+  HashNode *node = table->buckets[index];
+  HashNode *prev = NULL;
+
+  while (node != NULL) {
+    if (strcmp(node->key, key) == 0) {
+      if (prev == NULL) {
+        table->buckets[index] = node->next;
+      } else {
+        prev->next = node->next;
+      }
+
+      free(node->key);
+      free(node);
+      table->count--;
+      return;
+    }
+    prev = node;
+    node = node->next;
+  }
+}
+
+// ======================== DESTROY HASH TABLE =========================
+void hash_table_destroy(HashTable *table) {
+  for (size_t i = 0; i < table->size; i++) {
+    HashNode *node = table->buckets[i];
+    while (node != NULL) {
+      HashNode *temp = node;
+      node = node->next;
+
+      free(temp->key);
+      free(temp);
+    }
+  }
+  free(table->buckets);
+  free(table);
+}
+
+void hash_table_resize(HashTable *table, size_t new_size) {
+  HashTable *new_table = hash_table_create(new_size);
+  if (new_table == NULL)
+    return;
+
+  for (size_t i = 0; i < table->size; i++) {
+    HashNode *node = table->buckets[i];
+    while (node != NULL) {
+      hash_table_insert(new_table, node->key, node->value);
+      node = node->next;
+    }
+  }
+
+  HashNode **old_buckets = table->buckets;
+  table->buckets = new_table->buckets;
+  table->size = new_table->size;
+  table->count = new_table->count;
+
+  free(old_buckets);
+  free(new_table);
+}

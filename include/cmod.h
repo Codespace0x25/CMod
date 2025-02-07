@@ -8,6 +8,8 @@
 
 // ============================ TYPES =============================
 
+typedef unsigned int Uint;
+
 // the deconstructer for a object
 typedef void Deleter;
 
@@ -36,6 +38,20 @@ typedef struct {
   size_t back, fround, size;
   char **data;
 } Queue_t;
+
+// ======================== HASH NODE =========================
+typedef struct HashNode {
+  char *key;
+  void *value; // Pointer to any type of value
+  struct HashNode *next;
+} HashNode;
+
+// ======================== HASH TABLE =========================
+typedef struct {
+  size_t size;
+  size_t count;
+  HashNode **buckets;
+} HashTable;
 // =========================== DEFINITION ==========================
 
 #define OR |
@@ -106,11 +122,22 @@ String *read_file(String filepast);
 String *http_request(RequestType type, String *url, String *headers,
                      String *body);
 #endif
-// ========================== LIST API =======================
+// ========================== QUEUE API =======================
 #ifdef ENABLE_QUEUE
 
 MUST_BE_FREE Queue_t *queue_create();
 void queue_destroyer(Queue_t *queue);
 void queue_add(Queue_t *queue, char *data);
 char *queue_pull(Queue_t *queue);
+#endif
+// ========================== HASH MAP API ======================
+
+#ifdef ENABLE_HASH_MAP
+HashTable *hash_table_create(size_t size);
+void hash_table_destroy(HashTable *table);
+void hash_table_insert(HashTable *table, const char *key, void *value);
+void *hash_table_get(HashTable *table, const char *key);
+void hash_table_remove(HashTable *table, const char *key);
+void hash_table_resize(HashTable *table, size_t new_size);
+Uint hash_function(const char *key, size_t size);
 #endif
