@@ -1,10 +1,11 @@
 # Define variables
 CC = gcc
-CFLAGS = -Wall -Wextra -g -I./include
+CFLAGS = -Wall -Wextra -g -fPIC -I./include
+LDFLAGS = -shared
 LIB_DIR = ./build
 INCLUDE_DIR = ./include
 SRC_DIR = ./src
-LIB_NAME = libcmod.a
+LIB_NAME = libcmod.so
 OUTPUT_DIR = ./bin
 EXEC_NAME = myprogram
 
@@ -16,18 +17,18 @@ $(shell mkdir -p $(LIB_DIR) $(OUTPUT_DIR))
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(LIB_DIR)/%.o)
 
-# Rule to build .o files from .c files
+# Rule to build .o files from .c files with position-independent code (PIC)
 $(LIB_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
-# Target for building the static library
+# Target for building the shared library
 $(LIB_DIR)/$(LIB_NAME): $(OBJS)
-	ar rcs $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^
 
 # ============================ EXECUTABLE BUILD ===========================
-# Rule for building the executable
+# Rule for building the executable, dynamically linking the shared library
 $(OUTPUT_DIR)/$(EXEC_NAME): $(SRC_DIR)/main.c $(LIB_DIR)/$(LIB_NAME)
-	$(CC) $(CFLAGS) -L$(LIB_DIR) -lcmod -o $@ $^
+	$(CC) $(CFLAGS) -L$(LIB_DIR) -Wl,-rpath,$(LIB_DIR) -lcmod -o $@ $<
 
 # ============================ CLEANING ============================
 .PHONY: clean
@@ -65,4 +66,4 @@ all: $(LIB_DIR)/$(LIB_NAME)
 # ============================ TESTING ============================
 .PHONY: test
 test: $(OUTPUT_DIR)/$(EXEC_NAME)
-	$(OUTPUT_DIR)/$(EXEC_NAME)
+	LD_LIBRARY_PATH=$(LIB_DIR) $(OUTPUT_DIR)/$(EXEC_NAME)

@@ -1,6 +1,7 @@
 #include "../include/cmod.h"
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // ========================== MATRIX API ==========================
 
@@ -12,14 +13,14 @@
  * @return Pointer to the created Matrix, or NULL if allocation fails.
  */
 Matrix *matrix_create(size_t rows, size_t cols) {
-    Matrix *m = (Matrix *)malloc(sizeof(Matrix));
-    m->rows = rows;
-    m->cols = cols;
-    m->data = (float **)malloc(rows * sizeof(float *));
-    for (size_t i = 0; i < rows; i++) {
-        m->data[i] = (float *)calloc(cols, sizeof(float));
-    }
-    return m;
+  Matrix *m = (Matrix *)malloc(sizeof(Matrix));
+  m->rows = rows;
+  m->cols = cols;
+  m->data = (float **)malloc(rows * sizeof(float *));
+  for (size_t i = 0; i < rows; i++) {
+    m->data[i] = (float *)calloc(cols, sizeof(float));
+  }
+  return m;
 }
 
 /**
@@ -28,13 +29,13 @@ Matrix *matrix_create(size_t rows, size_t cols) {
  * @param m Pointer to the Matrix to be destroyed. Does nothing if NULL.
  */
 void matrix_destroy(Matrix *m) {
-    if (m) {
-        for (size_t i = 0; i < m->rows; i++) {
-            free(m->data[i]);
-        }
-        free(m->data);
-        free(m);
+  if (m) {
+    for (size_t i = 0; i < m->rows; i++) {
+      free(m->data[i]);
     }
+    free(m->data);
+    free(m);
+  }
 }
 
 /**
@@ -45,15 +46,16 @@ void matrix_destroy(Matrix *m) {
  * @return Pointer to the resulting Matrix, or NULL if dimensions mismatch.
  */
 Matrix *matrix_add(const Matrix *a, const Matrix *b) {
-    if (a->rows != b->rows || a->cols != b->cols) return NULL;
+  if (a->rows != b->rows || a->cols != b->cols)
+    return NULL;
 
-    Matrix *result = matrix_create(a->rows, a->cols);
-    for (size_t i = 0; i < a->rows; i++) {
-        for (size_t j = 0; j < a->cols; j++) {
-            result->data[i][j] = a->data[i][j] + b->data[i][j];
-        }
+  Matrix *result = matrix_create(a->rows, a->cols);
+  for (size_t i = 0; i < a->rows; i++) {
+    for (size_t j = 0; j < a->cols; j++) {
+      result->data[i][j] = a->data[i][j] + b->data[i][j];
     }
-    return result;
+  }
+  return result;
 }
 
 /**
@@ -64,19 +66,21 @@ Matrix *matrix_add(const Matrix *a, const Matrix *b) {
  * @return Pointer to the resulting Matrix, or NULL if dimensions mismatch.
  */
 Matrix *matrix_sub(const Matrix *a, const Matrix *b) {
-    if (a->rows != b->rows || a->cols != b->cols) return NULL;
+  if (a->rows != b->rows || a->cols != b->cols)
+    return NULL;
 
-    Matrix *result = matrix_create(a->rows, a->cols);
-    for (size_t i = 0; i < a->rows; i++) {
-        for (size_t j = 0; j < a->cols; j++) {
-            result->data[i][j] = a->data[i][j] - b->data[i][j];
-        }
+  Matrix *result = matrix_create(a->rows, a->cols);
+  for (size_t i = 0; i < a->rows; i++) {
+    for (size_t j = 0; j < a->cols; j++) {
+      result->data[i][j] = a->data[i][j] - b->data[i][j];
     }
-    return result;
+  }
+  return result;
 }
 
-Matrix *matrix_mul(const Matrix *a, const Matrix *b){
-  if (a->cols IS_NOT b->rows) return NULL;
+Matrix *matrix_mul(const Matrix *a, const Matrix *b) {
+  if (a->cols IS_NOT b->rows)
+    return NULL;
 
   Matrix *result = matrix_create(a->rows, b->cols);
 
@@ -91,8 +95,9 @@ Matrix *matrix_mul(const Matrix *a, const Matrix *b){
   return result;
 }
 
-Matrix *matrix_div(const Matrix *a, const Matrix *b){
-  if (a->rows IS_NOT b->rows L_OR a->cols IS_NOT b->cols) return NULL;
+Matrix *matrix_div(const Matrix *a, const Matrix *b) {
+  if (a->rows IS_NOT b->rows L_OR a->cols IS_NOT b->cols)
+    return NULL;
 
   Matrix *result = matrix_create(a->rows, a->cols);
 
@@ -102,14 +107,14 @@ Matrix *matrix_div(const Matrix *a, const Matrix *b){
         result->data[i][j] = a->data[i][j] / b->data[i][j];
       } else {
         result->data[i][j] = 0;
-	fprintf(stderr,"you souldint do this you are deviding by a 0. that is bad");
+        fprintf(stderr,
+                "you souldint do this you are deviding by a 0. that is bad");
       }
     }
   }
   return result;
 }
 
-// TODO: Implement matrix_mul and matrix_div functions.
 // ========================== STRING API ==========================
 
 /**
@@ -119,12 +124,12 @@ Matrix *matrix_div(const Matrix *a, const Matrix *b){
  * @return Pointer to the created String, or NULL if allocation fails.
  */
 String *string_create(const char *initial_data) {
-    size_t len = strlen(initial_data);
-    String *s = (String *)malloc(sizeof(String));
-    s->data = (char *)malloc((len + 1) * sizeof(char));
-    strcpy(s->data, initial_data);
-    s->length = len;
-    return s;
+  size_t len = strlen(initial_data);
+  String *s = (String *)malloc(sizeof(String));
+  s->data = (char *)malloc((len + 1) * sizeof(char));
+  strcpy(s->data, initial_data);
+  s->length = len;
+  return s;
 }
 
 /**
@@ -133,37 +138,39 @@ String *string_create(const char *initial_data) {
  * @param s Pointer to the String to be destroyed. Does nothing if NULL.
  */
 void string_destroy(String *s) {
-    if (s) {
-        free(s->data);
-        free(s);
-    }
+  if (s) {
+    free(s->data);
+    free(s);
+  }
 }
 
 /**
- * @brief Replace occurrences of a substring with another string within a String object.
+ * @brief Replace occurrences of a substring with another string within a String
+ * object.
  *
  * @param s Pointer to the String object.
  * @param find Substring to find.
  * @param replace Substring to replace it with.
  */
 void string_replace(String *s, const char *find, const char *replace) {
-    char *pos = strstr(s->data, find);
-    if (!pos) return;
+  char *pos = strstr(s->data, find);
+  if (!pos)
+    return;
 
-    size_t find_len = strlen(find);
-    size_t replace_len = strlen(replace);
+  size_t find_len = strlen(find);
+  size_t replace_len = strlen(replace);
 
-    size_t new_len = s->length - find_len + replace_len;
-    char *new_data = (char *)malloc(new_len + 1);
+  size_t new_len = s->length - find_len + replace_len;
+  char *new_data = (char *)malloc(new_len + 1);
 
-    strncpy(new_data, s->data, pos - s->data);
-    new_data[pos - s->data] = '\0';
-    strcat(new_data, replace);
-    strcat(new_data, pos + find_len);
+  strncpy(new_data, s->data, pos - s->data);
+  new_data[pos - s->data] = '\0';
+  strcat(new_data, replace);
+  strcat(new_data, pos + find_len);
 
-    free(s->data);
-    s->data = new_data;
-    s->length = new_len;
+  free(s->data);
+  s->data = new_data;
+  s->length = new_len;
 }
 
 #include <curl/curl.h>
@@ -178,16 +185,18 @@ void string_replace(String *s, const char *find, const char *replace) {
  * @param userdata Pointer to the String object storing the response.
  * @return Number of bytes handled.
  */
-static size_t write_callback(void *ptr, size_t size, size_t nmemb, void *userdata) {
-    size_t total_size = size * nmemb;
-    String *response = (String *)userdata;
+static size_t write_callback(void *ptr, size_t size, size_t nmemb,
+                             void *userdata) {
+  size_t total_size = size * nmemb;
+  String *response = (String *)userdata;
 
-    response->data = (char *)realloc(response->data, response->length + total_size + 1);
-    memcpy(response->data + response->length, ptr, total_size);
-    response->length += total_size;
-    response->data[response->length] = '\0';
+  response->data =
+      (char *)realloc(response->data, response->length + total_size + 1);
+  memcpy(response->data + response->length, ptr, total_size);
+  response->length += total_size;
+  response->data[response->length] = '\0';
 
-    return total_size;
+  return total_size;
 }
 
 /**
@@ -199,56 +208,94 @@ static size_t write_callback(void *ptr, size_t size, size_t nmemb, void *userdat
  * @param body Pointer to the body String object for POST/PUT requests.
  * @return Pointer to the response String object, or NULL on failure.
  */
-String *http_request(RequestType type, String *url, String *headers, String *body) {
-    CURL *curl = curl_easy_init();
-    if (!curl) return NULL;
+String *http_request(RequestType type, String *url, String *headers,
+                     String *body) {
+  CURL *curl = curl_easy_init();
+  if (!curl)
+    return NULL;
 
-    CURLcode res;
-    String *response = (String *)malloc(sizeof(String));
-    response->data = (char *)malloc(1);
-    response->data[0] = '\0';
-    response->length = 0;
+  CURLcode res;
+  String *response = (String *)malloc(sizeof(String));
+  response->data = (char *)malloc(1);
+  response->data[0] = '\0';
+  response->length = 0;
 
-    struct curl_slist *curl_headers = NULL;
-    if (headers) {
-        char *header_copy = strdup(headers->data);
-        char *line = strtok(header_copy, "\n");
-        while (line) {
-            curl_headers = curl_slist_append(curl_headers, line);
-            line = strtok(NULL, "\n");
-        }
-        free(header_copy);
+  struct curl_slist *curl_headers = NULL;
+  if (headers) {
+    char *header_copy = strdup(headers->data);
+    char *line = strtok(header_copy, "\n");
+    while (line) {
+      curl_headers = curl_slist_append(curl_headers, line);
+      line = strtok(NULL, "\n");
     }
+    free(header_copy);
+  }
 
-    curl_easy_setopt(curl, CURLOPT_URL, url->data);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, response);
+  curl_easy_setopt(curl, CURLOPT_URL, url->data);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, response);
 
-    if (type == POST || type == PUT) {
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body ? body->data : "");
-    }
-    if (type == PUT) {
-        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
-    }
-    if (type == DELETE) {
-        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-    }
+  if (type == POST || type == PUT) {
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body ? body->data : "");
+  }
+  if (type == PUT) {
+    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
+  }
+  if (type == DELETE) {
+    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+  }
 
-    if (curl_headers) {
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curl_headers);
-    }
+  if (curl_headers) {
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curl_headers);
+  }
 
-    res = curl_easy_perform(curl);
-    if (res != CURLE_OK) {
-        fprintf(stderr, "HTTP request failed: %s\n", curl_easy_strerror(res));
-        string_destroy(response);
-        response = NULL;
-    }
+  res = curl_easy_perform(curl);
+  if (res != CURLE_OK) {
+    fprintf(stderr, "HTTP request failed: %s\n", curl_easy_strerror(res));
+    string_destroy(response);
+    response = NULL;
+  }
 
-    curl_slist_free_all(curl_headers);
-    curl_easy_cleanup(curl);
+  curl_slist_free_all(curl_headers);
+  curl_easy_cleanup(curl);
 
-    return response;
+  return response;
+}
+
+// ========================== FILE PROSESES =======================
+
+String *read_file(String filepast) {
+  String *timp = string_create("");
+
+  FILE *file = fopen(filepast.data, "rb");
+  if (!file) {
+    return NULL;
+  }
+  fseek(file, 0, SEEK_END);
+  long length = ftell(file);
+  rewind(file);
+
+  char *buffer = (char *)malloc(length + 1);
+  if (!buffer) {
+    fclose(file);
+    return NULL;
+  }
+  fread(buffer, 1, length, file);
+  buffer[length] = '\0';
+  timp->length = length;
+  timp->data = (char *)&buffer;
+  fclose(file);
+
+  return timp;
+}
+
+void write_file(String filepath, String *input) {
+  FILE *file = fopen(filepath.data, "rb");
+  if (!file) {
+    fputs("error: unable to open the file check if you have premishon", stderr);
+  }
+  fprintf(file, "%s", To_char(input));
+  fclose(file);
 }
 
 // ========================== CUSTOM PRINTF =======================
@@ -260,20 +307,66 @@ String *http_request(RequestType type, String *url, String *headers, String *bod
  * @param ... Additional arguments for the format string.
  */
 void pprintf(const char *format, ...) {
-    va_list args;
-    va_start(args, format);
+  va_list args;
+  va_start(args, format);
 
-    const char *ptr = format;
-    while (*ptr) {
-        if (*ptr == '%' && *(ptr + 1) == 's') {
-            String *s = va_arg(args, String *);
-            printf("%s", s->data);
-            ptr++;
-        } else {
-            putchar(*ptr);
-        }
-        ptr++;
+  const char *ptr = format;
+  while (*ptr) {
+    if (*ptr == '%' && *(ptr + 1) == 's') {
+      String *s = va_arg(args, String *);
+      printf("%s", s->data);
+      ptr++;
+    } else {
+      putchar(*ptr);
     }
+    ptr++;
+  }
 
-    va_end(args);
+  va_end(args);
+}
+
+// ========================== LIST API =======================
+
+#define INITIAL_SIZE 4
+
+MUST_BE_FREE Queue_t *queue_create() {
+  Queue_t *queue = (Queue_t *)malloc(sizeof(Queue_t));
+  if (!queue)
+    return NULL;
+
+  queue->size = INITIAL_SIZE;
+  queue->fround = 0;
+  queue->back = 0;
+  queue->data = (char **)malloc(queue->size * sizeof(char *));
+
+  if (!queue->data) {
+    free(queue);
+    return NULL;
+  }
+
+  return queue;
+}
+
+void queue_destroyer(Queue_t *queue) {
+  if (!queue)
+    return;
+  free(queue->data);
+  free(queue);
+}
+
+void queue_add(Queue_t *queue, char *data) {
+  if (queue->fround >= queue->size) {
+    queue->size *= 2;
+    queue->data = (char **)realloc(queue->data, queue->size * sizeof(char *));
+    if (!queue->data)
+      return;
+  }
+
+  queue->data[queue->fround++] = data;
+}
+
+char *queue_pull(Queue_t *queue) {
+  if (queue->back == queue->fround)
+    return NULL;
+  return queue->data[queue->back++];
 }

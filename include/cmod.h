@@ -1,41 +1,41 @@
 #pragma once
 
 // ============================= INCLUDES ===========================
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdbool.h>
-#include <stdarg.h>
 
 // ============================ TYPES =============================
 
 // the deconstructer for a object
 typedef void Deleter;
 
-// a general pointer 
-typedef void* Pointer_t;
+// a general pointer
+typedef void *Pointer_t;
 
-// A situation or surrounding substance within which something else originates, develops, or is contained. 
+// A situation or surrounding substance within which something else originates,
+// develops, or is contained.
 typedef struct Matrix {
-    float **data;
-    size_t rows;
-    size_t cols;
+  float **data;
+  size_t rows;
+  size_t cols;
 } Matrix;
-
 // string do i have to say any thang else
 typedef struct String {
-    char *data;
-    size_t length;
+  char *data;
+  size_t length;
 } String;
 
-
 // types of http reqruest;
-typedef enum {
-    GET,
-    POST,
-    PUT,
-    DELETE
-} RequestType;
+typedef enum { GET, POST, PUT, DELETE } RequestType;
 
+// this is to be a binamic list for a way to srotr a orderd list that you would
+// like to be fist in fist out.
+typedef struct {
+  size_t back, fround, size;
+  char **data;
+} Queue_t;
 
 // =========================== DEFINITION ==========================
 
@@ -58,14 +58,6 @@ typedef enum {
 #define SHIFT_RIGHT >>
 #define MUST_BE_FREE [[nodiscard]]
 
-// ============================= MACROS ===========================
-
-#define cast(type, data) ((type)data)
-
-#define LOOP (while(true))
-
-#define checkFORnull(input, cleanUp) (if(!input) cleanUp())
-
 // ========================== MATRIX API ==========================
 
 Matrix *matrix_create(size_t rows, size_t cols);
@@ -82,7 +74,6 @@ Matrix *matrix_div(const Matrix *a, const Matrix *b);
 
 // ========================== STRING API ==========================
 
-
 String *string_create(const char *initial_data);
 
 Deleter string_destroy(String *s);
@@ -93,13 +84,24 @@ String *string_find(const String *s, const char *substring);
 
 void pprintf(const char *format, ...);
 
-  // ============================= MACROS ===========================
+// ============================= MACROS ===========================
 
-#define Make_String(name,data) (String* name =string_create(data))
-#define To_char(data) (data.data)
+#define Make_String(name, data) (String *name = string_create(data))
+#define To_char(input) (input->data)
+
+// ========================== FILE API ===========================
+
+void write_file(String filepath, String *input);
+
+String *read_file(String filepast);
 
 // ========================== HTTP API ===========================
 
+String *http_request(RequestType type, String *url, String *headers,
+                     String *body);
 
-String *http_request(RequestType type, String *url, String *headers, String *body);
-
+// ========================== LIST API =======================
+MUST_BE_FREE Queue_t *queue_create();
+void queue_destroyer(Queue_t *queue);
+void queue_add(Queue_t *queue, char *data);
+char *queue_pull(Queue_t *queue);
