@@ -1,6 +1,16 @@
 #pragma once
-
 // ============================= INCLUDES ===========================
+//
+// why... would you do this. this is supost to be small.
+// this is beacse i dont want to have to build it my self
+//
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_video.h>
+// what would you do this that make a less poetable
+//
+//
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -15,6 +25,8 @@ typedef void Deleter;
 
 // a general pointer
 typedef void *Pointer_t;
+typedef char *Path_t; // that is this... oOo its a file path to make a the end
+                      // user better... ok
 
 // A situation or surrounding substance within which something else originates,
 // develops, or is contained.
@@ -52,8 +64,26 @@ typedef struct {
   size_t count;
   HashNode **buckets;
 } HashTable;
-// =========================== DEFINITION ==========================
 
+typedef struct {
+  int x, y;
+} Posison_data;
+
+// why is ther alot of commeints there. we can all gest by your  shten
+// and hay do you use
+typedef struct {
+  SDL_Window *window;   // pointer to the window type
+  SDL_Renderer *render; // the renderer to draw to screen
+  String *title;        // to be used as a window title
+  SDL_Event event;      // to get events to interact with
+  Uint width, height;   // size size of the window
+  Posison_data pos;
+  Uint32 sdl_window_flags;
+  Uint32 sdl_render_flags;
+} Cmod_Window;
+typedef SDL_Color Cmod_Window_Color;
+typedef SDL_Rect Cmod_Window_Rect;
+// =========================== DEFINITION ==========================
 #define OR |
 #define no 0
 #define AND &
@@ -71,8 +101,9 @@ typedef struct {
 #define WILL_BE =
 #define INC_BY +=
 #define LESS_THAN <
-#define SHIFT_RIGHT >>
 #define SHIFT_LEFT <<
+#define SHIFT_RIGHT >>
+#define PI 3.141592653
 #define GREATER_THAN >
 #define LESS_THAN_OR_EQUAL <=
 #define GREATER_THAN_OR_EQUAL >=
@@ -141,3 +172,40 @@ void hash_table_remove(HashTable *table, const char *key);
 void hash_table_resize(HashTable *table, size_t new_size);
 Uint hash_function(const char *key, size_t size);
 #endif
+
+// #ifdef ENABLE_WINDOW
+MUST_BE_FREE Cmod_Window *Cmod_Window_create(String *title, Uint width,
+                                             Uint height, Posison_data pos,
+                                             Uint32 sdl_window_flags,
+                                             Uint32 sdl_render_flags);
+
+void Cmod_Window_destroy(Cmod_Window *window);
+int Cmod_Window_open(Cmod_Window *window);
+void Cmod_Window_flash(Cmod_Window *window);
+void Cmod_Window_draw_pixle(Cmod_Window *window, Cmod_Window_Color color,
+                            Posison_data pos);
+void Cmod_Window_draw_rect(Cmod_Window *window, Cmod_Window_Color color,
+                           Posison_data pos, Cmod_Window_Rect rect,
+                           uint thickness);
+void Cmod_Window_draw_rect_fill(Cmod_Window *window, Cmod_Window_Color color,
+                                Posison_data pos, Cmod_Window_Rect rect);
+void Cmod_Window_draw_circle(Cmod_Window *window, Cmod_Window_Color color,
+                             Posison_data pos, Uint radeas, uint thickness);
+void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
+                                  Posison_data pos, Uint radeas);
+
+/*
+ * this was a good try but yor types where.
+ */
+
+// and also what is this TOOL_KIT.
+// this is so we can have a ui lib build in for eazy acsess to stuff.
+// #ifdef ENABLE_WINDOW_TOOK_KIT
+
+void Cmod_Window_TOOK_KIT_draw_test(Cmod_Window *window, Posison_data pos,
+                                    Cmod_Window_Color color, Path_t font,
+                                    String *test);
+
+// #endif
+
+// #endif
