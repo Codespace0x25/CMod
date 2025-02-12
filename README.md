@@ -19,12 +19,13 @@ Before installing Cmod, ensure you have the following:
 - A C compiler (e.g., `gcc`).
 - The `make` build tool.
 - `libcurl` development libraries (if you're using the HTTP API).
+- `SDL2` this is for the window api as it uses sdl as a back end.
 
 On Ubuntu, you can install the dependencies using:
 
 ```bash
 sudo apt update
-sudo apt install build-essential libcurl4-openssl-dev
+sudo apt install build-essential libcurl4-openssl-dev libsdl2-dev
 ```
 
 ### Building and Installing Cmod
