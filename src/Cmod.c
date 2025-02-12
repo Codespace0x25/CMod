@@ -1,4 +1,9 @@
 #include "../include/cmod.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_video.h>
+#include <X11/X.h>
+#include <X11/Xlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -446,3 +451,62 @@ void hash_table_resize(HashTable *table, size_t new_size) {
   free(old_buckets);
   free(new_table);
 }
+
+MUST_BE_FREE Cmod_Window *Cmod_Window_create(String *title, Uint width,
+                                             Uint height, Posison_data pos,
+                                             Uint32 sdl_window_flags,
+                                             Uint32 sdl_render_flags) {
+  if (0 IS_NOT SDL_Init(SDL_INIT_EVERYTHING))
+    return NULL;
+  Cmod_Window *timp = (Cmod_Window *)malloc(sizeof(Cmod_Window));
+  if (!timp)
+    return 0;
+  timp->title = title;
+  timp->width = width;
+  timp->height = height;
+  timp->pos = pos;
+  timp->sdl_window_flags = sdl_window_flags;
+  timp->sdl_render_flags = sdl_render_flags;
+  return timp;
+}
+
+void Cmod_Window_destroy(Cmod_Window *window) {
+  SDL_DestroyWindow(window->window);
+  SDL_DestroyRenderer(window->render);
+  SDL_Quit();
+  free(window->title);
+  free(window);
+}
+
+int Cmod_Window_open(Cmod_Window *window) {
+  window->window =
+      SDL_CreateWindow(To_char(window->title), window->pos.x, window->pos.y,
+                       window->width, window->height, window->sdl_window_flags);
+  if (!window->window)
+    return no;
+  window->render =
+      SDL_CreateRenderer(window->window, -1, window->sdl_render_flags);
+  if (!window->render) {
+    SDL_DestroyWindow(window->window);
+    return no;
+  }
+
+  return yes;
+}
+
+void Cmod_Window_flash(Cmod_Window *window) { SDL_RenderFlush(window->render); }
+void Cmod_Window_draw_pixle(Cmod_Window *window, Cmod_Window_Color color,
+                            Posison_data pos);
+void Cmod_Window_draw_rect(Cmod_Window *window, Cmod_Window_Color color,
+                           Posison_data pos, Cmod_Window_Rect rect,
+                           uint thickness);
+void Cmod_Window_draw_rect_fill(Cmod_Window *window, Cmod_Window_Color color,
+                                Posison_data pos, Cmod_Window_Rect rect);
+void Cmod_Window_draw_circle(Cmod_Window *window, Cmod_Window_Color color,
+                             Posison_data pos, Uint radeas, uint thickness);
+void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
+                                  Posison_data pos, Uint radeas);
+
+void Cmod_Window_TOOK_KIT_draw_test(Cmod_Window *window, Posison_data pos,
+                                    Cmod_Window_Color color, Path_t font,
+                                    String *test);
