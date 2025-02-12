@@ -496,7 +496,7 @@ int Cmod_Window_open(Cmod_Window *window) {
 
 void Cmod_Window_flash(Cmod_Window *window) { SDL_RenderFlush(window->render); }
 void Cmod_Window_draw_pixle(Cmod_Window *window, Cmod_Window_Color color,
-                            Posison_data pos);
+                            Posison_data pos) {}
 void Cmod_Window_draw_rect(Cmod_Window *window, Cmod_Window_Color color,
                            Posison_data pos, Cmod_Window_Rect rect,
                            uint thickness);
