@@ -1,4 +1,4 @@
 #!/bin/bash
 echo "cmod compilering."
-zig cc -lcmod -lcurl -Wall -Wextra   -g   "$@"
+zig cc -lcmod -lcurl -lSDL2 -Wall -Wextra   -g   "$@"
 echo "comp complet"

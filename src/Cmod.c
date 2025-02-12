@@ -2,8 +2,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
-#include <X11/X.h>
-#include <X11/Xlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -452,6 +450,8 @@ void hash_table_resize(HashTable *table, size_t new_size) {
   free(new_table);
 }
 
+static Cmod_Window_Color default_draw_color = {0, 0, 0, 100};
+
 MUST_BE_FREE Cmod_Window *Cmod_Window_create(String *title, Uint width,
                                              Uint height, Posison_data pos,
                                              Uint32 sdl_window_flags,
@@ -494,12 +494,32 @@ int Cmod_Window_open(Cmod_Window *window) {
   return yes;
 }
 
-void Cmod_Window_flash(Cmod_Window *window) { SDL_RenderFlush(window->render); }
+void Cmod_Window_set_default_draw_color(Cmod_Window *window,
+                                        Cmod_Window_Color color) {
+  default_draw_color = color;
+  SDL_SetRenderDrawColor(window->render, color.r, color.b, color.g, color.a);
+}
+void Cmod_Window_default_load_draw_color(Cmod_Window *window) {
+  SDL_SetRenderDrawColor(window->render, default_draw_color.r,
+                         default_draw_color.b, default_draw_color.g,
+                         default_draw_color.a);
+}
+void Cmod_Window_set_color(Cmod_Window *window, Cmod_Window_Color color) {
+  SDL_SetRenderDrawColor(window->render, color.r, color.b, color.g, color.a);
+}
+
+void Cmod_Window_flash(Cmod_Window *window) {
+  SDL_RenderPresent(window->render);
+}
 void Cmod_Window_draw_pixle(Cmod_Window *window, Cmod_Window_Color color,
-                            Posison_data pos) {}
+                            Posison_data pos) {
+  Cmod_Window_set_color(window, color);
+  SDL_RenderDrawPoint(window->render, pos.x, pos.y);
+  Cmod_Window_default_load_draw_color(window);
+}
 void Cmod_Window_draw_rect(Cmod_Window *window, Cmod_Window_Color color,
                            Posison_data pos, Cmod_Window_Rect rect,
-                           uint thickness);
+                           uint thickness) {}
 void Cmod_Window_draw_rect_fill(Cmod_Window *window, Cmod_Window_Color color,
                                 Posison_data pos, Cmod_Window_Rect rect);
 void Cmod_Window_draw_circle(Cmod_Window *window, Cmod_Window_Color color,

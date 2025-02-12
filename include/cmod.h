@@ -82,7 +82,10 @@ typedef struct {
   Uint32 sdl_render_flags;
 } Cmod_Window;
 typedef SDL_Color Cmod_Window_Color;
-typedef SDL_Rect Cmod_Window_Rect;
+typedef struct {
+  int w, h;
+} Cmod_Window_Rect;
+
 // =========================== DEFINITION ==========================
 #define OR |
 #define no 0
@@ -173,7 +176,7 @@ void hash_table_resize(HashTable *table, size_t new_size);
 Uint hash_function(const char *key, size_t size);
 #endif
 
-// #ifdef ENABLE_WINDOW
+#ifdef ENABLE_WINDOW
 MUST_BE_FREE Cmod_Window *Cmod_Window_create(String *title, Uint width,
                                              Uint height, Posison_data pos,
                                              Uint32 sdl_window_flags,
@@ -200,12 +203,12 @@ void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
 
 // and also what is this TOOL_KIT.
 // this is so we can have a ui lib build in for eazy acsess to stuff.
-// #ifdef ENABLE_WINDOW_TOOK_KIT
+#ifdef ENABLE_WINDOW_TOOK_KIT
 
 void Cmod_Window_TOOK_KIT_draw_test(Cmod_Window *window, Posison_data pos,
                                     Cmod_Window_Color color, Path_t font,
                                     String *test);
 
-// #endif
+#endif
 
-// #endif
+#endif
