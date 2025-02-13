@@ -1,0 +1,27 @@
+pkgname=cmod
+pkgver=0.4
+pkgrel=1
+pkgdesc="CMod - A project for creating something amazing"
+arch=('x86_64')
+url="https://github.com/Codespace0x25/CMod"
+license=('GPL3')
+depends=('curl' 'sdl2' 'zig')
+makedepends=('git' 'base-devel' 'zig' 'sdl2' 'curl')
+source=("git+https://github.com/Codespace0x25/CMod.git")
+sha256sums=('SKIP')
+
+prepare() {
+  cd "$srcdir/$pkgname"
+}
+
+build() {
+  cd "$srcdir/$pkgname"
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname"
+  sudo make install DESTDIR="$pkgdir"
+}
+
+
