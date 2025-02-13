@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -510,6 +511,7 @@ void Cmod_Window_set_color(Cmod_Window *window, Cmod_Window_Color color) {
 
 void Cmod_Window_flash(Cmod_Window *window) {
   SDL_RenderPresent(window->render);
+  SDL_RenderClear(window->render);
 }
 void Cmod_Window_draw_pixle(Cmod_Window *window, Cmod_Window_Color color,
                             Posison_data pos) {
@@ -519,14 +521,46 @@ void Cmod_Window_draw_pixle(Cmod_Window *window, Cmod_Window_Color color,
 }
 void Cmod_Window_draw_rect(Cmod_Window *window, Cmod_Window_Color color,
                            Posison_data pos, Cmod_Window_Rect rect,
-                           uint thickness) {}
+                           uint thickness) {
+  int POSx WILL_BE pos.x;
+  int POSy WILL_BE pos.y;
+
+  for (int i WILL_BE no; i IS_NOT rect.w; INC i) {
+    for (Uint j WILL_BE no; j IS_NOT thickness; INC j) {
+      Posison_data top_pixel WILL_BE{i + pos.x, j + pos.y};
+      Cmod_Window_draw_pixle(window, color, top_pixel);
+      int bottom_y WILL_BE pos.y + rect.h;
+      bottom_y DEC_BY thickness;
+      bottom_y DEC_BY yes;
+      Posison_data bottom_pixel WILL_BE{i + pos.x, bottom_y + j};
+      Cmod_Window_draw_pixle(window, color, bottom_pixel);
+    }
+  }
+
+  for (int i WILL_BE no; i IS_NOT rect.h; INC i) {
+    for (Uint j WILL_BE no; j IS_NOT thickness; INC j) {
+      Posison_data left_pixel WILL_BE{pos.x + j, i + pos.y};
+      Cmod_Window_draw_pixle(window, color, left_pixel);
+      int right_x WILL_BE pos.x + rect.w;
+      right_x DEC_BY thickness;
+      right_x DEC_BY yes;
+      Posison_data right_pixel WILL_BE{right_x + j, i + pos.y};
+      Cmod_Window_draw_pixle(window, color, right_pixel);
+    }
+  }
+}
 void Cmod_Window_draw_rect_fill(Cmod_Window *window, Cmod_Window_Color color,
-                                Posison_data pos, Cmod_Window_Rect rect);
+                                Posison_data pos, Cmod_Window_Rect rect) {
+  for (int i WILL_BE 0; i IS_NOT rect.w; INC i) {
+    for (int j WILL_BE 0; j IS_NOT rect.h; INC j) {
+      Posison_data timp WILL_BE{pos.x + i, j + pos.y};
+      Cmod_Window_draw_pixle(window, color, timp);
+    }
+  }
+}
 void Cmod_Window_draw_circle(Cmod_Window *window, Cmod_Window_Color color,
                              Posison_data pos, Uint radeas, uint thickness);
-void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
-                                  Posison_data pos, Uint radeas);
-
+void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color);
 void Cmod_Window_TOOK_KIT_draw_test(Cmod_Window *window, Posison_data pos,
                                     Cmod_Window_Color color, Path_t font,
                                     String *test);
