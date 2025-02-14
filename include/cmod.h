@@ -86,7 +86,19 @@ typedef SDL_Color Cmod_Window_Color;
 typedef struct {
   int w, h;
 } Cmod_Window_Rect;
-
+typedef struct {
+  Cmod_Window *window;
+  Posison_data pos;
+  Cmod_Window_Rect rect;
+  Cmod_Window_Color backgraound;
+  Cmod_Window_Color border;
+  uint thickness;
+  Cmod_Window_Color text_color;
+  Path_t font_path;
+  int font_size;
+  String *text;
+  void (*onClick)();
+} Cmod_Window_Button;
 // =========================== DEFINITION ==========================
 #define OR |
 #define no 0
@@ -205,7 +217,16 @@ void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
 // and also what is this TOOL_KIT.
 // this is so we can have a ui lib build in for eazy acsess to stuff.
 
+Cmod_Window_Button *
+Cmod_Window_button_create(Cmod_Window *window, Posison_data pos,
+                          Cmod_Window_Rect rect, Cmod_Window_Color backgraound,
+                          Cmod_Window_Color border, uint thickness,
+                          Cmod_Window_Color text_color, Path_t font_path,
+                          int font_size, String *text, void (*onClick)());
 void Cmod_Window_draw_text(Cmod_Window *window, Posison_data pos,
                            Cmod_Window_Color color, Path_t font_path,
                            int font_size, String *test);
+void Cmod_Window_button_draw(Cmod_Window_Button *button);
+void Cmod_Window_button_destroy(Cmod_Window_Button *button);
+
 #endif

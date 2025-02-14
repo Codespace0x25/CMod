@@ -656,3 +656,50 @@ void Cmod_Window_draw_text(Cmod_Window *window, Posison_data pos,
   SDL_FreeSurface(text_surface);
   TTF_CloseFont(font);
 }
+
+Cmod_Window_Button *
+Cmod_Window_button_create(Cmod_Window *window, Posison_data pos,
+                          Cmod_Window_Rect rect, Cmod_Window_Color backgraound,
+                          Cmod_Window_Color border, uint thickness,
+                          Cmod_Window_Color text_color, Path_t font_path,
+                          int font_size, String *text, void (*onClick)()) {
+  Cmod_Window_Button *timp =
+      (Cmod_Window_Button *)malloc(sizeof(Cmod_Window_Button));
+  if (!timp) {
+    fprintf(stderr, "%s, error constructing a button", __FUNCTION__);
+  }
+  timp->window = window;
+  timp->pos = pos;
+  timp->rect = rect;
+  timp->backgraound = backgraound;
+  timp->border = border;
+  timp->thickness = thickness;
+  timp->text_color = text_color;
+  timp->font_path = font_path;
+  timp->font_size = font_size;
+  timp->text = text;
+  timp->onClick = onClick;
+  return timp;
+}
+void Cmod_Window_button_destroy(Cmod_Window_Button *button) { free(button); }
+
+void Cmod_Window_button_draw(Cmod_Window_Button *button) {
+  if (!button) {
+    fprintf(
+        stderr,
+        "%s - you can't draw a NULL button, so check the button if its NULL",
+        __FUNCTION__);
+    return;
+  }
+  Cmod_Window_draw_rect_fill(button->window, button->backgraound, button->pos,
+                             button->rect);
+  Cmod_Window_draw_rect(button->window, button->border, button->pos,
+                        button->rect, button->thickness);
+
+  Cmod_Window_draw_text(
+      button->window,
+      (Posison_data){(button->pos.x + button->rect.w / 3) - button->font_size +
+                         button->text->length / 3,
+                     (button->pos.y + button->rect.h / 3)},
+      button->text_color, button->font_path, button->font_size, button->text);
+}
