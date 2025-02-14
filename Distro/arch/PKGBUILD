@@ -11,7 +11,7 @@ source=("git+https://github.com/Codespace0x25/CMod.git")
 sha256sums=('SKIP')
 
 prepare() {
-  cd "$srcdir/$pkgname"
+    cd "$srcdir/$pkgname"
 }
 
 build() {

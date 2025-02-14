@@ -193,9 +193,9 @@ void Cmod_Window_draw_rect(Cmod_Window *window, Cmod_Window_Color color,
 void Cmod_Window_draw_rect_fill(Cmod_Window *window, Cmod_Window_Color color,
                                 Posison_data pos, Cmod_Window_Rect rect);
 void Cmod_Window_draw_circle(Cmod_Window *window, Cmod_Window_Color color,
-                             Posison_data pos, Uint radeas, uint thickness);
+                             Posison_data pos, uint32_t radius, uint thickness);
 void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
-                                  Posison_data pos, Uint radeas);
+                                  Posison_data pos, uint32_t radius);
 
 /*
  * this was a good try but yor types where.

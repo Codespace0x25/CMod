@@ -3,6 +3,7 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <math.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -558,9 +559,70 @@ void Cmod_Window_draw_rect_fill(Cmod_Window *window, Cmod_Window_Color color,
     }
   }
 }
+void Cmod_Window_draw_hline(Cmod_Window *window, Cmod_Window_Color color,
+                            int x1, int x2, int y) {
+  for (int x = x1; x <= x2; x++) {
+    Cmod_Window_draw_pixle(window, color, (Posison_data){x, y});
+  }
+}
+
 void Cmod_Window_draw_circle(Cmod_Window *window, Cmod_Window_Color color,
-                             Posison_data pos, Uint radeas, uint thickness);
-void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color);
+                             Posison_data pos, uint32_t radius,
+                             uint thickness) {
+  int cx = pos.x, cy = pos.y;
+
+  for (uint t = 0; t < thickness; t++) { // Loop for thickness
+    int r = radius - t;
+    int x = 0, y = r;
+    int d = 1 - r;
+
+    while (y >= x) {
+      // Plot pixels in all 8 octants
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx + x, cy + y});
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx - x, cy + y});
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx + x, cy - y});
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx - x, cy - y});
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx + y, cy + x});
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx - y, cy + x});
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx + y, cy - x});
+      Cmod_Window_draw_pixle(window, color, (Posison_data){cx - y, cy - x});
+
+      x++;
+      if (d < 0) {
+        d += 2 * x + 1;
+      } else {
+        y--;
+        d += 2 * (x - y) + 1;
+      }
+    }
+  }
+}
+void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
+                                  Posison_data pos, uint32_t radius) {
+  int cx = pos.x, cy = pos.y;
+  int x = 0, y = radius;
+  int d = 1 - radius;
+
+  // Draw initial center line
+  Cmod_Window_draw_hline(window, color, cx - radius, cx + radius, cy);
+
+  while (y >= x) {
+    // Draw horizontal scanlines to fill the circle
+    Cmod_Window_draw_hline(window, color, cx - x, cx + x, cy - y);
+    Cmod_Window_draw_hline(window, color, cx - x, cx + x, cy + y);
+    Cmod_Window_draw_hline(window, color, cx - y, cx + y, cy - x);
+    Cmod_Window_draw_hline(window, color, cx - y, cx + y, cy + x);
+
+    x++;
+    if (d < 0) {
+      d += 2 * x + 1;
+    } else {
+      y--;
+      d += 2 * (x - y) + 1;
+    }
+  }
+}
+
 void Cmod_Window_TOOK_KIT_draw_test(Cmod_Window *window, Posison_data pos,
                                     Cmod_Window_Color color, Path_t font,
                                     String *test);

@@ -44,7 +44,7 @@ int main() {
         is_runing = no;
       }
     }
-    Cmod_Window_draw_circle(window, color, point, 32, 5);
+    Cmod_Window_draw_circle(window, color, point, 32, 1);
     // Cmod_Window_draw_rect_fill(window, colorF, pointF, rectF);
     Cmod_Window_flash(window);
     SDL_Delay(16);
