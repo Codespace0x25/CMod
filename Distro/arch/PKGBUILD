@@ -5,8 +5,8 @@ pkgdesc="CMod - A project for creating something amazing"
 arch=('x86_64')
 url="https://github.com/Codespace0x25/CMod"
 license=('GPL3')
-depends=('curl' 'sdl2' 'zig')
-makedepends=('git' 'base-devel' 'zig' 'sdl2' 'curl')
+depends=('curl' 'sdl2' 'zig' 'libsdl2-ttf')
+makedepends=('git' 'base-devel' 'zig' 'sdl2' 'curl' 'libsdl2-ttf')
 source=("git+https://github.com/Codespace0x25/CMod.git")
 sha256sums=('SKIP')
 

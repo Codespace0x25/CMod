@@ -25,7 +25,7 @@ On Ubuntu, you can install the dependencies using:
 
 ```bash
 sudo apt update
-sudo apt install build-essential libcurl4-openssl-dev libsdl2-dev zig
+sudo apt install build-essential libcurl4-openssl-dev libsdl2-dev zig libsdl2-ttf-dev
 ```
 
 ### Building and Installing Cmod
