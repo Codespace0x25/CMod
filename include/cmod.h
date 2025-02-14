@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 // what would you do this that make a less poetable
 //
@@ -203,12 +204,8 @@ void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
 
 // and also what is this TOOL_KIT.
 // this is so we can have a ui lib build in for eazy acsess to stuff.
-#ifdef ENABLE_WINDOW_TOOK_KIT
 
-void Cmod_Window_TOOK_KIT_draw_test(Cmod_Window *window, Posison_data pos,
-                                    Cmod_Window_Color color, Path_t font,
-                                    String *test);
-
-#endif
-
+void Cmod_Window_draw_text(Cmod_Window *window, Posison_data pos,
+                           Cmod_Window_Color color, Path_t font_path,
+                           int font_size, String *test);
 #endif

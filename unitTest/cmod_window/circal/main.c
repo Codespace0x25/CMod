@@ -31,11 +31,25 @@ int main() {
     return 1;
   }
   fprintf(stdout, "%s,\n drawing a pixle to screen \n", __PRETTY_FUNCTION__);
-  Posison_data point = {50, 50};
-  Cmod_Window_Color color = {23, 255, 23, 100};
+  Posison_data point = {500, 500};
+  Posison_data point2 = {750, 500};
+  Cmod_Window_Color color = {255, 255, 255, 100};
+  Cmod_Window_Color color2 = {0, 255, 160, 100};
+  Cmod_Window_Color color3 = {0, 0, 0, 100};
+  Cmod_Window_Color color4 = {255, 164, 203, 100};
+  Cmod_Window_Color color4s = {255, 122, 160, 100};
+  Cmod_Window_Color color4m = {78, 9, 22, 100};
+  Cmod_Window_Color color4t = {255, 255, 255, 100};
+  //
+  String *string = string_create("aaaaaaaa");
 
   Posison_data pointF = {200, 100};
   Cmod_Window_Color colorF = {255, 0, 255, 100};
+  Cmod_Window_Rect rectF = {600, 500};
+  Cmod_Window_Rect rectFs = {200, 500};
+  Cmod_Window_Rect Mouth = {200, 100};
+  Cmod_Window_Rect teath = {200, 20};
+  Cmod_Window_Rect brow = {200, 50};
   int is_runing = yes;
   SDL_Event event;
   while (is_runing) {
@@ -44,8 +58,29 @@ int main() {
         is_runing = no;
       }
     }
-    Cmod_Window_draw_circle(window, color, point, 32, 1);
-    // Cmod_Window_draw_rect_fill(window, colorF, pointF, rectF);
+    Cmod_Window_draw_rect_fill(window, color4, (Posison_data){250, 300}, rectF);
+    Cmod_Window_draw_rect_fill(window, color4s, (Posison_data){250, 300},
+                               rectFs);
+    Cmod_Window_draw_rect_fill(window, color4m, (Posison_data){570, 660},
+                               Mouth);
+    Cmod_Window_draw_rect_fill(window, color4t, (Posison_data){570, 660},
+                               teath);
+    Cmod_Window_draw_rect_fill(window, color4t, (Posison_data){570, 750},
+                               teath);
+    Cmod_Window_draw_rect_fill(window, color4m, (Posison_data){450, 350}, brow);
+    Cmod_Window_draw_rect_fill(window, color4m, (Posison_data){450 * 1.5, 350},
+                               brow);
+    Cmod_Window_draw_circle_fill(window, color, point, 100);
+    Cmod_Window_draw_circle_fill(window, color2, point, 50);
+    Cmod_Window_draw_circle_fill(window, color3, point, 23);
+    Cmod_Window_draw_circle_fill(window, color, point2, 100);
+    Cmod_Window_draw_circle_fill(window, color2, point2, 50);
+    Cmod_Window_draw_circle_fill(window, color3, point2, 23);
+    Cmod_Window_draw_text(
+        window, (Posison_data){200, 200},
+        (Cmod_Window_Color){255, 255, 255, 100},
+        (Path_t) "/usr/share/fonts/TTF/BigBlueTerm437NerdFont-Regular.ttf", 50,
+        string);
     Cmod_Window_flash(window);
     SDL_Delay(16);
   }

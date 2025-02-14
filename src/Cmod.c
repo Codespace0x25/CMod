@@ -1,6 +1,9 @@
 #include "../include/cmod.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 #include <math.h>
 #include <stdint.h>
@@ -460,6 +463,8 @@ MUST_BE_FREE Cmod_Window *Cmod_Window_create(String *title, Uint width,
                                              Uint32 sdl_render_flags) {
   if (0 IS_NOT SDL_Init(SDL_INIT_EVERYTHING))
     return NULL;
+  if (-1 IS TTF_Init())
+    return NULL;
   Cmod_Window *timp = (Cmod_Window *)malloc(sizeof(Cmod_Window));
   if (!timp)
     return 0;
@@ -623,6 +628,31 @@ void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
   }
 }
 
-void Cmod_Window_TOOK_KIT_draw_test(Cmod_Window *window, Posison_data pos,
-                                    Cmod_Window_Color color, Path_t font,
-                                    String *test);
+void Cmod_Window_draw_text(Cmod_Window *window, Posison_data pos,
+                           Cmod_Window_Color color, Path_t font_path,
+                           int font_size, String *test) {
+  TTF_Font *font = TTF_OpenFont(font_path, font_size);
+  if (!font) {
+    printf("TTF_OpenFont error: %s\n", TTF_GetError());
+    return;
+  }
+  SDL_Surface *text_surface = TTF_RenderText_Solid(font, To_char(test), color);
+  if (!text_surface) {
+    printf("TTF_RenderText_Solid error: %s\n", TTF_GetError());
+    TTF_CloseFont(font);
+    return;
+  }
+  SDL_Texture *text_Texture =
+      SDL_CreateTextureFromSurface(window->render, text_surface);
+  if (!text_Texture) {
+    printf("SDL_CreateTextureFromSurface error: %s\n", SDL_GetError());
+    SDL_FreeSurface(text_surface);
+    TTF_CloseFont(font);
+    return;
+  }
+  SDL_Rect dst_rect = {pos.x, pos.y, text_surface->w, text_surface->h};
+  SDL_RenderCopy(window->render, text_Texture, NULL, &dst_rect);
+  SDL_DestroyTexture(text_Texture);
+  SDL_FreeSurface(text_surface);
+  TTF_CloseFont(font);
+}
