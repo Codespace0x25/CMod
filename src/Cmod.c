@@ -1,6 +1,8 @@
 #include "../include/cmod.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_pixels.h>
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_ttf.h>
@@ -465,6 +467,10 @@ MUST_BE_FREE Cmod_Window *Cmod_Window_create(String *title, Uint width,
     return NULL;
   if (-1 IS TTF_Init())
     return NULL;
+  if (!(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) AND IMG_INIT_JPG |
+        IMG_INIT_PNG)) {
+    return NULL;
+  }
   Cmod_Window *timp = (Cmod_Window *)malloc(sizeof(Cmod_Window));
   if (!timp)
     return 0;
@@ -528,9 +534,6 @@ void Cmod_Window_draw_pixle(Cmod_Window *window, Cmod_Window_Color color,
 void Cmod_Window_draw_rect(Cmod_Window *window, Cmod_Window_Color color,
                            Posison_data pos, Cmod_Window_Rect rect,
                            uint thickness) {
-  int POSx WILL_BE pos.x;
-  int POSy WILL_BE pos.y;
-
   for (int i WILL_BE no; i IS_NOT rect.w; INC i) {
     for (Uint j WILL_BE no; j IS_NOT thickness; INC j) {
       Posison_data top_pixel WILL_BE{i + pos.x, j + pos.y};
@@ -702,4 +705,71 @@ void Cmod_Window_button_draw(Cmod_Window_Button *button) {
                          button->text->length / 3,
                      (button->pos.y + button->rect.h / 3)},
       button->text_color, button->font_path, button->font_size, button->text);
+}
+
+ImageType detect_image_type(const char *filename) {
+  const char *ext = strrchr(filename, '.');
+  if (!ext)
+    return IMAGE_TYPE_UNKNOWN;
+  ext++; // Move past the dot
+
+  if (strcasecmp(ext, "png") == 0)
+    return IMAGE_TYPE_PNG;
+  if (strcasecmp(ext, "jpg") == 0 || strcasecmp(ext, "jpeg") == 0)
+    return IMAGE_TYPE_JPG;
+  if (strcasecmp(ext, "bmp") == 0)
+    return IMAGE_TYPE_BMP;
+  if (strcasecmp(ext, "tga") == 0)
+    return IMAGE_TYPE_TGA;
+
+  return IMAGE_TYPE_UNKNOWN;
+}
+
+void Cmod_Window_Draw_image(Cmod_Window *window, Posison_data pos,
+                            Cmod_Window_Rect rect, ImageType image_type,
+                            Path_t file) {
+  SDL_Rect deck = {pos.x, pos.y, rect.w, rect.h};
+  if (!window) {
+    fprintf(stderr, "%s, you cant draw to somthing that dosent exist\n",
+            __FUNCTION__);
+    return;
+  }
+  if (file == NULL) {
+    fprintf(stderr,
+            "%s, how are you going to draw a image if you dont even have the "
+            "file path.\n",
+            __FUNCTION__);
+    return;
+  }
+  if (image_type == IMAGE_TYPE_UNKNOWN) {
+    printf("un desloded image type we will take care of it for you\n");
+    image_type = detect_image_type(file);
+    if (image_type == IMAGE_TYPE_UNKNOWN) {
+      fprintf(stderr, "%s unable to find the image type. for %s", __FUNCTION__,
+              file);
+      return;
+    }
+  } else {
+    printf("we found the image type.");
+  }
+  SDL_Texture *img_texture;
+  switch (image_type) {
+  case IMAGE_TYPE_PNG:
+    img_texture = IMG_LoadTexture(window->render, file);
+    break;
+  case IMAGE_TYPE_JPG:
+    img_texture = IMG_LoadTexture(window->render, file);
+    break;
+  case IMAGE_TYPE_TGA:
+    img_texture = IMG_LoadTexture(window->render, file);
+    break;
+  case IMAGE_TYPE_BMP:
+    img_texture = IMG_LoadTexture(window->render, file);
+    break;
+  default:
+    return;
+    break;
+    SDL_RenderCopy(window->render, img_texture, NULL, &deck);
+    SDL_DestroyTexture(img_texture);
+  }
 }

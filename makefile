@@ -1,6 +1,6 @@
 # Define variables
 CC := $(shell command -v modcc 2>/dev/null || echo gcc)
-CFLAGS = -Wall -Wextra -g -fPIC -I./include
+CFLAGS = -Wall -Wextra -g -fPIC -I./include 
 LDFLAGS = -shared
 LIB_DIR = ./build
 INCLUDE_DIR = ./include

@@ -99,6 +99,19 @@ typedef struct {
   String *text;
   void (*onClick)();
 } Cmod_Window_Button;
+
+typedef enum {
+  IMAGE_TYPE_UNKNOWN,
+  IMAGE_TYPE_PNG,
+  IMAGE_TYPE_JPG,
+  IMAGE_TYPE_BMP,
+  //  IMAGE_TYPE_GIF, // im not doing this rite now as this seems like it would
+  //  be hard, but if i ever need it ill inplment it
+  IMAGE_TYPE_TGA,
+  //  IMAGE_TYPE_SVG, // i may do this
+  //  IMAGE_TYPE_MEMORY // i see no reson for this.
+} ImageType;
+
 // =========================== DEFINITION ==========================
 #define OR |
 #define no 0
@@ -216,6 +229,7 @@ void Cmod_Window_draw_circle_fill(Cmod_Window *window, Cmod_Window_Color color,
 
 // and also what is this TOOL_KIT.
 // this is so we can have a ui lib build in for eazy acsess to stuff.
+// but what if you dont need teh Cmod button ro text
 
 Cmod_Window_Button *
 Cmod_Window_button_create(Cmod_Window *window, Posison_data pos,
@@ -229,4 +243,9 @@ void Cmod_Window_draw_text(Cmod_Window *window, Posison_data pos,
 void Cmod_Window_button_draw(Cmod_Window_Button *button);
 void Cmod_Window_button_destroy(Cmod_Window_Button *button);
 
+// image.
+
+void Cmod_Window_Draw_image(Cmod_Window *window, Posison_data pos,
+                            Cmod_Window_Rect rect, ImageType image_type,
+                            Path_t file);
 #endif
