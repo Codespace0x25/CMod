@@ -40,8 +40,7 @@ int main() {
   Cmod_Window_Color color4s = {255, 122, 160, 100};
   Cmod_Window_Color color4m = {78, 9, 22, 100};
   Cmod_Window_Color color4t = {255, 255, 255, 100};
-  //
-  String *string = string_create("aaaaaaaa");
+  String *string = string_create("his name is jon");
 
   Posison_data pointF = {200, 100};
   Cmod_Window_Color colorF = {255, 0, 255, 100};
