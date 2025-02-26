@@ -166,16 +166,17 @@ void string_replace(String *s, const char *find, const char *replace) {
   s->length = new_len;
 }
 
-// ========================== HTTP API =========================== #include
-// <curl/curl.h> /** * @brief Callback function for libcurl to handle response
+// ========================== HTTP API ===========================
+#include <curl/curl.h>
+/** * @brief Callback function for libcurl to handle response
 // data. * * @param ptr Pointer to the response data. * @param size Size of each
 // data chunk.
-*@param nmemb Number of data chunks
-        .*@param userdata Pointer to the String object storing the
-            response.*@ return Number of bytes handled.*
-    /
-    static size_t write_callback(void *ptr, size_t size, size_t nmemb,
-                                 void *userdata) {
+*@param nmemb Number of data chunks.*
+        @param userdata Pointer to the String object storing the response.*
+        @ return Number of bytes handled.*
+*/
+static size_t write_callback(void *ptr, size_t size, size_t nmemb,
+                             void *userdata) {
   size_t total_size = size * nmemb;
   String *response = (String *)userdata;
   response->data =
