@@ -6,6 +6,7 @@
 //
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
@@ -52,14 +53,12 @@ typedef struct {
   char **data;
 } Queue_t;
 
-// ======================== HASH NODE =========================
 typedef struct HashNode {
   char *key;
   void *value; // Pointer to any type of value
   struct HashNode *next;
 } HashNode;
 
-// ======================== HASH TABLE =========================
 typedef struct {
   size_t size;
   size_t count;
@@ -192,7 +191,7 @@ char *queue_pull(Queue_t *queue);
 #endif
 // ========================== HASH MAP API ======================
 
-#ifdef ENABLE_HASH_MAP
+#ifndef DISABEL_HASH_MAP
 HashTable *hash_table_create(size_t size);
 void hash_table_destroy(HashTable *table);
 void hash_table_insert(HashTable *table, const char *key, void *value);
@@ -200,6 +199,12 @@ void *hash_table_get(HashTable *table, const char *key);
 void hash_table_remove(HashTable *table, const char *key);
 void hash_table_resize(HashTable *table, size_t new_size);
 Uint hash_function(const char *key, size_t size);
+static HashTable *pointer_table;
+void DynamicPointer_setup();
+void Store_dynamic_pointer(char *name, Pointer_t pointer);
+Pointer_t Get_dynamic_pointer(char *name);
+MUST_BE_FREE Pointer_t Remove_dynamic_pointer(char *name);
+void DynamicPointer_Close();
 #endif
 
 #ifdef ENABLE_WINDOW
@@ -245,7 +250,7 @@ void Cmod_Window_button_destroy(Cmod_Window_Button *button);
 
 // image.
 
-void Cmod_Window_Draw_image(Cmod_Window *window, Posison_data pos,
+void Cmod_Window_draw_image(Cmod_Window *window, Posison_data pos,
                             Cmod_Window_Rect rect, ImageType image_type,
                             Path_t file);
 #endif

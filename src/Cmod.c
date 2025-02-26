@@ -7,7 +7,6 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -167,19 +166,16 @@ void string_replace(String *s, const char *find, const char *replace) {
   s->length = new_len;
 }
 
-// ========================== HTTP API ===========================
-#include <curl/curl.h>
-/**
- * @brief Callback function for libcurl to handle response data.
- *
- * @param ptr Pointer to the response data.
- * @param size Size of each data chunk.
- * @param nmemb Number of data chunks.
- * @param userdata Pointer to the String object storing the response.
- * @return Number of bytes handled.
- */
-static size_t write_callback(void *ptr, size_t size, size_t nmemb,
-                             void *userdata) {
+// ========================== HTTP API =========================== #include
+// <curl/curl.h> /** * @brief Callback function for libcurl to handle response
+// data. * * @param ptr Pointer to the response data. * @param size Size of each
+// data chunk.
+*@param nmemb Number of data chunks
+        .*@param userdata Pointer to the String object storing the
+            response.*@ return Number of bytes handled.*
+    /
+    static size_t write_callback(void *ptr, size_t size, size_t nmemb,
+                                 void *userdata) {
   size_t total_size = size * nmemb;
   String *response = (String *)userdata;
   response->data =
@@ -467,8 +463,8 @@ MUST_BE_FREE Cmod_Window *Cmod_Window_create(String *title, Uint width,
     return NULL;
   if (-1 IS TTF_Init())
     return NULL;
-  if (!(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) AND IMG_INIT_JPG |
-        IMG_INIT_PNG)) {
+  if (!(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG)
+            AND(IMG_INIT_JPG | IMG_INIT_PNG))) {
     return NULL;
   }
   Cmod_Window *timp = (Cmod_Window *)malloc(sizeof(Cmod_Window));
@@ -707,6 +703,8 @@ void Cmod_Window_button_draw(Cmod_Window_Button *button) {
       button->text_color, button->font_path, button->font_size, button->text);
 }
 
+// this should never be exposed as this si to help with errors of not knowing
+// the image type.
 ImageType detect_image_type(const char *filename) {
   const char *ext = strrchr(filename, '.');
   if (!ext)
@@ -725,10 +723,15 @@ ImageType detect_image_type(const char *filename) {
   return IMAGE_TYPE_UNKNOWN;
 }
 
-void Cmod_Window_Draw_image(Cmod_Window *window, Posison_data pos,
+// this is to be caerfal about type and reiten to be alowded for each and other
+// type of image. such as PNG, JPG, tga, BPM. so if you would like to try to add
+// new stuff image stuff use this lay out in the switch to make it a texture
+// then add a opson in the header enum in the same enum layout
+void Cmod_Window_draw_image(Cmod_Window *window, Posison_data pos,
                             Cmod_Window_Rect rect, ImageType image_type,
                             Path_t file) {
   SDL_Rect deck = {pos.x, pos.y, rect.w, rect.h};
+
   if (!window) {
     fprintf(stderr, "%s, you cant draw to somthing that dosent exist\n",
             __FUNCTION__);
@@ -748,28 +751,73 @@ void Cmod_Window_Draw_image(Cmod_Window *window, Posison_data pos,
       fprintf(stderr, "%s unable to find the image type. for %s", __FUNCTION__,
               file);
       return;
+    } else {
+      printf("we found the image type.");
     }
-  } else {
-    printf("we found the image type.");
   }
-  SDL_Texture *img_texture;
+  SDL_Surface *img_surfis;
   switch (image_type) {
   case IMAGE_TYPE_PNG:
-    img_texture = IMG_LoadTexture(window->render, file);
+    img_surfis = IMG_Load(file);
     break;
   case IMAGE_TYPE_JPG:
-    img_texture = IMG_LoadTexture(window->render, file);
+    img_surfis = IMG_Load(file);
     break;
   case IMAGE_TYPE_TGA:
-    img_texture = IMG_LoadTexture(window->render, file);
+    img_surfis = IMG_Load(file);
     break;
   case IMAGE_TYPE_BMP:
-    img_texture = IMG_LoadTexture(window->render, file);
+    img_surfis = IMG_Load(file);
     break;
   default:
-    return;
+    img_surfis = IMG_Load(file);
     break;
-    SDL_RenderCopy(window->render, img_texture, NULL, &deck);
-    SDL_DestroyTexture(img_texture);
+    SDL_Texture *texture =
+        SDL_CreateTextureFromSurface(window->render, img_surfis);
+    SDL_RenderCopy(window->render, texture, NULL, &deck);
+    SDL_FreeSurface(img_surfis);
+    SDL_DestroyTexture(texture);
   }
+}
+// dybamic pointers
+void Store_dynamic_pointer(char *name, Pointer_t pointer) {
+  if (!pointer_table) {
+    printf("pleas run  DynamicPointer_setup(); before using the dybamic "
+           "pointer as it will not work with out setup");
+    return;
+  }
+  hash_table_insert(pointer_table, name, pointer);
+}
+Pointer_t Get_dynamic_pointer(char *name) {
+  if (!pointer_table) {
+    printf("pleas run  DynamicPointer_setup(); before using the dybamic "
+           "pointer as it will not work with out setup");
+    return NULL;
+  }
+  return hash_table_get(pointer_table, name);
+}
+MUST_BE_FREE Pointer_t Remove_dynamic_pointer(char *name) {
+  if (!pointer_table) {
+    printf("pleas run  DynamicPointer_setup(); before using the dybamic "
+           "pointer as it will not work with out setup");
+    return NULL;
+  }
+  Pointer_t timp = hash_table_get(pointer_table, name);
+  hash_table_remove(pointer_table, name);
+  return timp;
+}
+
+void DynamicPointer_Close() {
+  if (pointer_table->count IS_NOT 0) {
+    printf("you cant close the dynamic pointer table as you still have "
+           "pointers alive plese kill them\n");
+    return;
+  }
+  hash_table_destroy(pointer_table);
+}
+void DynamicPointer_setup() {
+  if (pointer_table) {
+    printf("the dinamic pointer is alraty setup.");
+  }
+  pointer_table = hash_table_create(2);
 }
